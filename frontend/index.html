@@ -1,0 +1,375 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FraudShield AI — Real-Time Fraud Detection System</title>
+  <meta name="description" content="AI-powered financial fraud detection using Machine Learning and Deep Learning models for real-time transaction analysis." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+</head>
+<body>
+
+<!-- ═══════════════════════════ SIDEBAR ═══════════════════════════ -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-logo">
+    <div class="logo-icon">
+      <svg width="26" height="26" viewBox="0 0 24 24" fill="none">
+        <path d="M12 2L3 7l9 5 9-5-9-5z" fill="url(#lg1)"/>
+        <path d="M3 12l9 5 9-5" stroke="url(#lg1)" stroke-width="2" stroke-linecap="round"/>
+        <path d="M3 17l9 5 9-5" stroke="url(#lg1)" stroke-width="2" stroke-linecap="round" opacity="0.6"/>
+        <defs>
+          <linearGradient id="lg1" x1="3" y1="2" x2="21" y2="22" gradientUnits="userSpaceOnUse">
+            <stop stop-color="#a78bfa"/>
+            <stop offset="1" stop-color="#06b6d4"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+    <span class="logo-text">FraudShield<span class="accent">AI</span></span>
+  </div>
+
+  <nav class="sidebar-nav">
+    <a href="#" class="nav-item active" data-section="dashboard" onclick="showSection('dashboard',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+      Dashboard
+    </a>
+    <a href="#" class="nav-item" data-section="analyze" onclick="showSection('analyze',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+      Analyze Transaction
+    </a>
+    <a href="#" class="nav-item" data-section="models" onclick="showSection('models',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+      Model Performance
+    </a>
+    <a href="#" class="nav-item" data-section="history" onclick="showSection('history',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12,6 12,12 16,14"/></svg>
+      Transaction History
+    </a>
+    <a href="#" class="nav-item" data-section="features" onclick="showSection('features',this)">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+      Feature Importance
+    </a>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div class="status-indicator" id="apiStatus">
+      <span class="status-dot"></span>
+      <span class="status-text">Connecting…</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ═══════════════════════════ MAIN CONTENT ═══════════════════════════ -->
+<main class="main-content">
+
+  <!-- TOP BAR -->
+  <header class="topbar">
+    <div class="topbar-left">
+      <h1 class="page-title" id="pageTitle">Live Dashboard</h1>
+      <span class="page-subtitle" id="pageSubtitle">Real-time financial transaction monitoring</span>
+    </div>
+    <div class="topbar-right">
+      <button class="btn btn-ghost" id="simulateBtn" onclick="simulateTransactions()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><polygon points="5,3 19,12 5,21"/></svg>
+        Simulate
+      </button>
+      <button class="btn btn-primary" id="trainBtn" onclick="trainModels()">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg>
+        Train Models
+      </button>
+    </div>
+  </header>
+
+  <!-- ══════ SECTION: DASHBOARD ══════ -->
+  <section class="section active" id="section-dashboard">
+    <!-- KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card glass">
+        <div class="kpi-icon purple"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg></div>
+        <div class="kpi-body">
+          <span class="kpi-label">Transactions Analyzed</span>
+          <span class="kpi-value" id="kpiTotal">—</span>
+          <span class="kpi-delta green" id="kpiTotalDelta">Live monitoring</span>
+        </div>
+      </div>
+      <div class="kpi-card glass">
+        <div class="kpi-icon red"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg></div>
+        <div class="kpi-body">
+          <span class="kpi-label">Fraud Detected</span>
+          <span class="kpi-value" id="kpiFraud">—</span>
+          <span class="kpi-delta red" id="kpiFraudRate">—</span>
+        </div>
+      </div>
+      <div class="kpi-card glass">
+        <div class="kpi-icon green"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20,6 9,17 4,12"/></svg></div>
+        <div class="kpi-body">
+          <span class="kpi-label">Legitimate</span>
+          <span class="kpi-value" id="kpiLegit">—</span>
+          <span class="kpi-delta green" id="kpiLegitRate">—</span>
+        </div>
+      </div>
+      <div class="kpi-card glass">
+        <div class="kpi-icon cyan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/><path d="M4.93 4.93a10 10 0 0 0 0 14.14"/></svg></div>
+        <div class="kpi-body">
+          <span class="kpi-label">Models Active</span>
+          <span class="kpi-value" id="kpiModels">—</span>
+          <span class="kpi-delta cyan">Ensemble detection</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts Row -->
+    <div class="charts-grid">
+      <div class="card glass chart-card">
+        <div class="card-header">
+          <h3>Transaction Risk Distribution</h3>
+          <span class="badge purple">Live</span>
+        </div>
+        <canvas id="riskChart" height="220"></canvas>
+      </div>
+      <div class="card glass chart-card">
+        <div class="card-header">
+          <h3>Fraud by Merchant Category</h3>
+        </div>
+        <canvas id="merchantChart" height="220"></canvas>
+      </div>
+    </div>
+
+    <!-- Live Feed -->
+    <div class="card glass">
+      <div class="card-header">
+        <h3>Live Transaction Feed</h3>
+        <button class="btn btn-ghost btn-sm" onclick="clearFeed()">Clear</button>
+      </div>
+      <div class="live-feed" id="liveFeed">
+        <div class="feed-empty">Run a simulation to see live transactions</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ SECTION: ANALYZE ══════ -->
+  <section class="section" id="section-analyze">
+    <div class="analyze-layout">
+      <!-- Form -->
+      <div class="card glass analyze-form-card">
+        <div class="card-header">
+          <h3>Transaction Details</h3>
+          <button class="btn btn-ghost btn-sm" onclick="fillRandom()">Random</button>
+        </div>
+        <form id="txnForm" onsubmit="analyzeTransaction(event)">
+          <div class="form-grid">
+            <div class="form-group">
+              <label>Amount (USD)</label>
+              <input type="number" id="f_amount" value="250.00" step="0.01" min="0.01" required />
+            </div>
+            <div class="form-group">
+              <label>Hour of Day (0-23)</label>
+              <input type="number" id="f_hour" value="14" min="0" max="23" required />
+            </div>
+            <div class="form-group">
+              <label>Day of Week (0=Mon)</label>
+              <input type="number" id="f_dow" value="2" min="0" max="6" required />
+            </div>
+            <div class="form-group">
+              <label>Merchant Category</label>
+              <select id="f_merchant">
+                <option value="0">Grocery</option>
+                <option value="1">E-Commerce</option>
+                <option value="2">Restaurant</option>
+                <option value="3">Fuel Station</option>
+                <option value="4">Electronics</option>
+                <option value="5">Travel/Hotel</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Txn Frequency (7d)</label>
+              <input type="number" id="f_freq" value="3" min="0" required />
+            </div>
+            <div class="form-group">
+              <label>Avg Txn Amount (USD)</label>
+              <input type="number" id="f_avg" value="200.00" step="0.01" min="0.01" required />
+            </div>
+            <div class="form-group">
+              <label>Distance from Home (km)</label>
+              <input type="number" id="f_dist" value="5.0" step="0.1" min="0" required />
+            </div>
+            <div class="form-group">
+              <label>Foreign Transaction</label>
+              <select id="f_foreign">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Txn in Last 1 Hour</label>
+              <input type="number" id="f_1h" value="1" min="0" required />
+            </div>
+            <div class="form-group">
+              <label>Txn in Last 24 Hours</label>
+              <input type="number" id="f_24h" value="4" min="0" required />
+            </div>
+            <div class="form-group">
+              <label>Account Age (Days)</label>
+              <input type="number" id="f_age" value="730" min="0" required />
+            </div>
+            <div class="form-group">
+              <label>Credit Limit (USD)</label>
+              <input type="number" id="f_limit" value="5000" min="1" required />
+            </div>
+            <div class="form-group">
+              <label>Card Present</label>
+              <select id="f_card">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>PIN Used</label>
+              <select id="f_pin">
+                <option value="1">Yes</option>
+                <option value="0">No</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label>Online Transaction</label>
+              <select id="f_online">
+                <option value="0">No</option>
+                <option value="1">Yes</option>
+              </select>
+            </div>
+          </div>
+          <button type="submit" class="btn btn-primary btn-full" id="analyzeBtn">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="16" height="16"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/></svg>
+            Analyze Transaction
+          </button>
+        </form>
+      </div>
+
+      <!-- Results Panel -->
+      <div class="analyze-result-col">
+        <!-- Risk Meter -->
+        <div class="card glass" id="resultPanel" style="display:none;">
+          <div class="card-header"><h3>Analysis Result</h3></div>
+          <div class="risk-meter-container">
+            <div class="risk-gauge">
+              <svg viewBox="0 0 200 120" class="gauge-svg">
+                <defs>
+                  <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+                    <stop offset="0%" stop-color="#22d3ee"/>
+                    <stop offset="50%" stop-color="#f59e0b"/>
+                    <stop offset="100%" stop-color="#ef4444"/>
+                  </linearGradient>
+                </defs>
+                <path d="M 20 100 A 80 80 0 0 1 180 100" fill="none" stroke="rgba(255,255,255,0.1)" stroke-width="16" stroke-linecap="round"/>
+                <path id="gaugeArc" d="M 20 100 A 80 80 0 0 1 20 100" fill="none" stroke="url(#gaugeGrad)" stroke-width="16" stroke-linecap="round"/>
+                <text id="gaugeLabel" x="100" y="90" text-anchor="middle" fill="white" font-size="22" font-weight="700" font-family="Inter">0%</text>
+                <text id="riskText" x="100" y="110" text-anchor="middle" fill="#94a3b8" font-size="10" font-family="Inter">LOW RISK</text>
+              </svg>
+            </div>
+            <div class="risk-badge" id="riskBadge">ANALYZING…</div>
+          </div>
+
+          <div class="model-scores" id="modelScores"></div>
+        </div>
+
+        <!-- Empty state -->
+        <div class="card glass empty-result" id="emptyResult">
+          <div class="empty-icon">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64"><path d="M9 3H5a2 2 0 00-2 2v4m6-6h10a2 2 0 012 2v4M9 3v18m0 0h10a2 2 0 002-2V9M9 21H5a2 2 0 01-2-2V9m0 0h18"/></svg>
+          </div>
+          <p>Fill in the transaction details and click <strong>Analyze</strong> to get real-time fraud prediction from all AI models.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ SECTION: MODEL PERFORMANCE ══════ -->
+  <section class="section" id="section-models">
+    <div class="models-grid" id="modelsGrid">
+      <div class="card glass load-prompt">
+        <p>Click <strong>Train Models</strong> or load existing metrics.</p>
+        <button class="btn btn-primary" onclick="fetchMetrics()">Load Metrics</button>
+      </div>
+    </div>
+    <div class="charts-grid" id="metricsCharts" style="margin-top:1.5rem;display:none;">
+      <div class="card glass chart-card">
+        <div class="card-header"><h3>Model Comparison — F1 / ROC-AUC</h3></div>
+        <canvas id="modelCompareChart" height="240"></canvas>
+      </div>
+      <div class="card glass chart-card">
+        <div class="card-header"><h3>Precision vs Recall</h3></div>
+        <canvas id="prRecallChart" height="240"></canvas>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ SECTION: HISTORY ══════ -->
+  <section class="section" id="section-history">
+    <div class="card glass">
+      <div class="card-header">
+        <h3>Recent Transactions</h3>
+        <button class="btn btn-ghost btn-sm" onclick="fetchHistory()">Refresh</button>
+      </div>
+      <div class="table-wrapper">
+        <table class="txn-table" id="historyTable">
+          <thead>
+            <tr>
+              <th>ID</th><th>Time</th><th>Amount</th><th>Merchant</th>
+              <th>Risk Score</th><th>Risk Level</th><th>Verdict</th>
+            </tr>
+          </thead>
+          <tbody id="historyBody">
+            <tr><td colspan="7" class="table-empty">No transactions yet. Run a simulation or analyze a transaction.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════ SECTION: FEATURE IMPORTANCE ══════ -->
+  <section class="section" id="section-features">
+    <div class="charts-grid">
+      <div class="card glass chart-card">
+        <div class="card-header">
+          <h3>Random Forest — Feature Importance</h3>
+        </div>
+        <canvas id="rfFiChart" height="300"></canvas>
+      </div>
+      <div class="card glass chart-card">
+        <div class="card-header">
+          <h3>XGBoost — Feature Importance</h3>
+        </div>
+        <canvas id="xgbFiChart" height="300"></canvas>
+      </div>
+    </div>
+    <div class="card glass" style="margin-top:1.5rem;padding:1.5rem;">
+      <h3 style="margin-bottom:1rem;color:var(--text-primary);">Feature Descriptions</h3>
+      <div class="feature-desc-grid" id="featureDescGrid"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- ══════ TRAINING OVERLAY ══════ -->
+<div class="overlay" id="trainOverlay">
+  <div class="overlay-card glass">
+    <div class="train-spinner"></div>
+    <h3>Training AI Models…</h3>
+    <p>Isolation Forest → Random Forest → XGBoost → Autoencoder</p>
+    <div class="train-progress">
+      <div class="train-progress-bar" id="trainProgressBar"></div>
+    </div>
+    <span class="train-eta" id="trainEta">This may take 2–5 minutes</span>
+  </div>
+</div>
+
+<!-- ══════ TOAST ══════ -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
+<script src="/static/app.js"></script>
+</body>
+</html>

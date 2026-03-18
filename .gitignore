@@ -1,0 +1,18 @@
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments
+.env
+.venv
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+
+# Models
+# Depending on preference you might want to uncomment these if the models become too large
+# models/isolation_forest.pkl
+# models/random_forest.pkl
+# models/xgboost.pkl
